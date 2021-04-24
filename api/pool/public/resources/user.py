@@ -4,11 +4,11 @@ from .base import PublicResource
 class User(PublicResource):
     POST = dict(
         schema="test",
-        logic_func='create'
+        logic_func='post'
     )
 
     def get(self):
-        return "hello"
+        pass
 
     def post(self):
         pass

@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, g
 from flask_restful import Api
 
 
@@ -28,6 +28,12 @@ class Factory(object):
         app = Flask(__name__)
 
         api = Api(app)
+
+        @app.before_request
+        def handle_before_request():
+            g.session = "session sql"
+            g.sql = "sql"
+
         for endpoint, resource in self.resources.items():
             api.add_resource(resource, endpoint)
         return app
