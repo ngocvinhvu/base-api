@@ -1,3 +1,10 @@
+DEFAULT_METHODS_PARAM_LOCATION = {
+    'post': 'json',
+    'patch': 'json',
+    'put': 'json',
+    'get': 'args',
+    'delete': 'args',
+}
 
 STRING_LENGTH = {
     'UUID4': 36,

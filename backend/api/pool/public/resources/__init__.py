@@ -1,0 +1,5 @@
+from .user import RESOURCES as USER_RESOURCES
+
+RESOURCES = {
+    **USER_RESOURCES
+}
