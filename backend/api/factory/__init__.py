@@ -1,10 +1,12 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_restful import Api
+
+from backend.api.factory.base_error import HTTPError
 
 
 class Factory(object):
 
-    def __init__(self, config, resources):
+    def __init__(self, config, resources=None):
         self.config = config
         self.resources = resources
 
@@ -16,6 +18,12 @@ class Factory(object):
 
         """API"""
         api = Api(app)
+
+        @app.errorhandler(HTTPError)
+        def handle_invalid_usage(error):
+            response = jsonify(error.output())
+            response.status_code = error.status_code
+            return response
 
         """RESOURCES installation"""
         for endpoint, resource in self.resources.items():

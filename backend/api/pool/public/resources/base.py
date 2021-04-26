@@ -1,4 +1,4 @@
-from backend.api.factory.base_resources import BaseResource
+from backend.api.factory.base_resource import BaseResource
 
 
 class PublicResource(BaseResource):
