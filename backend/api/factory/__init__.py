@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, g
 from flask_restful import Api
 
 from backend.api.factory.base_error import HTTPError
@@ -6,8 +6,9 @@ from backend.api.factory.base_error import HTTPError
 
 class Factory(object):
 
-    def __init__(self, config, resources=None):
+    def __init__(self, config, sql_db, resources=None):
         self.config = config
+        self.sql_db = sql_db
         self.resources = resources
 
     def create_app(self):
@@ -18,6 +19,18 @@ class Factory(object):
 
         """API"""
         api = Api(app)
+
+        @app.before_request
+        def handle_before_request():
+            g.session = self.sql_db.start_session()
+            g.sql = self.sql_db
+
+        @app.after_request
+        def handle_after_request(response):
+            session = g.session
+            g.session = None
+            session.close()
+            return response
 
         @app.errorhandler(HTTPError)
         def handle_invalid_usage(error):
