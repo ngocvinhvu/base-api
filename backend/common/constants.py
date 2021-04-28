@@ -1,3 +1,16 @@
+DATE_FORMAT = '%d/%m/%Y'
+DATETIME_FORMAT = '%d/%m/%Y %H:%M:%S'
+
+VALID_DATETIME_FORMATS = [
+    DATE_FORMAT,
+    DATETIME_FORMAT
+]
+
+PAGINATION = {
+    'page': 1,
+    'per_page': 50
+}
+
 DEFAULT_METHODS_PARAM_LOCATION = {
     'post': 'json',
     'patch': 'json',

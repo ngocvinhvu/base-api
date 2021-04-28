@@ -1,9 +1,13 @@
 from marshmallow import fields, ValidationError, Schema
 
+from .constants import STRING_LENGTH
+
 
 class IdField(fields.Field):
     def _validate(self, value):
         if not isinstance(value, str):
+            raise ValidationError('Invalid id.')
+        if len(value) != STRING_LENGTH['UUID4']:
             raise ValidationError('Invalid id.')
 
 
