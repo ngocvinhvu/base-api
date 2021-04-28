@@ -1,10 +1,10 @@
-from flask import request, jsonify
+from flask import request, jsonify, g
 from flask_restful import Resource
 
 from backend.common.schemas import BaseGettingSchema
 from backend.common.constants import DEFAULT_METHODS_PARAM_LOCATION
 
-from .base_error import MethodNotAllowed
+from .base_error import MethodNotAllowedException, BadRequestParamsException
 from .base_logics import BaseLogic
 
 
@@ -22,17 +22,26 @@ class BaseResource(Resource):
         def handle_request(*args, **kwargs):
             method_opts = getattr(self, request.method, None)
             if not method_opts:
-                raise MethodNotAllowed
+                raise MethodNotAllowedException
 
+            # Get sql_session and sql.
+            sql_session = g.session
+            sql = g.sql
+
+            # Handle input data.
             params = self.parse_request_params(method_opts)
 
-            logic = self.logic_class()
+            # Get logic function.
+            logic = self.logic_class(sql_session, sql)
             logic_func_name = method_opts.get('logic_func', None)
             logic_func = getattr(logic, logic_func_name, None)
             if not logic_func:
-                raise Exception
+                raise NotImplementedError('%s does not have function %s' % (self.logic_class.__name__,
+                                                                            logic_func_name))
 
             kwargs.update(params)
+
+            # Do logic.
             result = logic_func(*args, **kwargs)
             status_code = result.get('status_code', None)
             if status_code:
@@ -53,7 +62,7 @@ class BaseResource(Resource):
         input_schema = input_schema()
         param_location = method_opts.get('param_location', DEFAULT_METHODS_PARAM_LOCATION.get(method.lower()))
         if not param_location:
-            raise Exception
+            raise NotImplementedError('Missing %s param location!' % method)
 
         param_container = getattr(request, param_location) or {}
         raw_params = {}
@@ -62,5 +71,5 @@ class BaseResource(Resource):
 
         err = input_schema.validate(raw_params)
         if err:
-            raise Exception
+            raise BadRequestParamsException(message=str(err))
         return input_schema.load(raw_params)

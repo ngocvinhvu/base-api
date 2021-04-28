@@ -8,7 +8,7 @@ class Postgres(object):
 
         self.engine = None
 
-        self.start_session()
+        self.setup_engine()
 
     def setup_engine(self):
         self.engine = create_engine(self.uri)

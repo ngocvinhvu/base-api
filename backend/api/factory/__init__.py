@@ -32,6 +32,7 @@ class Factory(object):
             session.close()
             return response
 
+        # Custom Error handling
         @app.errorhandler(HTTPError)
         def handle_invalid_usage(error):
             response = jsonify(error.output())

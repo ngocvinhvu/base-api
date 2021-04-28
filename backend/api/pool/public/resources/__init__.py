@@ -1,5 +1,7 @@
 from .user import RESOURCES as USER_RESOURCES
+from .machine import RESOURCES as MACHINE_RESOURCE
 
 RESOURCES = {
-    **USER_RESOURCES
+    **USER_RESOURCES,
+    **MACHINE_RESOURCE
 }

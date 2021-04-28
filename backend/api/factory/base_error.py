@@ -30,6 +30,31 @@ class HTTPError(Exception):
         return json.dumps(self.output())
 
 
-class MethodNotAllowed(HTTPError):
+class MethodNotAllowedException(HTTPError):
     status_code = 405
     message = 'Method not allowed.'
+
+
+class UnauthorizedException(HTTPError):
+    status_code = 401
+    message = 'Unauthorized error.'
+
+
+class BadRequestParamsException(HTTPError):
+    status_code = 400
+    message = 'Bad request params.'
+
+
+class PermissionException(HTTPError):
+    status_code = 403
+    message = 'Permission Error.'
+
+
+class ServiceNotAvailableException(HTTPError):
+    status_code = 503
+    message = 'Service not available.'
+
+
+class ServerException(HTTPError):
+    status_code = 500
+    message = 'Server error.'
