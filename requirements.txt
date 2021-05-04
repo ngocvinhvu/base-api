@@ -1,3 +1,6 @@
+keystoneauth1
+python-keystoneclient==3.18.0
+itsdangerous
 Flask==1.1.1
 flask-marshmallow==0.10.1
 Flask-Migrate==2.5.2

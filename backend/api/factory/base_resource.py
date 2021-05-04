@@ -10,6 +10,7 @@ from .base_logics import BaseLogic
 
 class BaseResource(Resource):
     GET = dict(
+        decorators=[],
         schema=BaseGettingSchema,
         param_location='args',
         auth_required=False,
@@ -28,9 +29,6 @@ class BaseResource(Resource):
             sql_session = g.session
             sql = g.sql
 
-            # Handle input data.
-            params = self.parse_request_params(method_opts)
-
             # Get logic function.
             logic = self.logic_class(sql_session, sql)
             logic_func_name = method_opts.get('logic_func', None)
@@ -38,6 +36,12 @@ class BaseResource(Resource):
             if not logic_func:
                 raise NotImplementedError('%s does not have function %s' % (self.logic_class.__name__,
                                                                             logic_func_name))
+            decorators = method_opts.get('decorators', [])
+            for d in decorators:
+                logic_func = d(logic_func)
+
+            # Handle input data.
+            params = self.parse_request_params(method_opts)
 
             kwargs.update(params)
 
