@@ -25,7 +25,7 @@ def create_ks_client(sess):
 
 
 def create_admin_session():
-    keystone_authtoken = {
+    credentials = {
         'auth_url': CONF.OS_AUTH_URL,
         'username': CONF.OS_USERNAME,
         'password': CONF.OS_PASSWORD,
@@ -33,5 +33,5 @@ def create_admin_session():
         'user_domain_name': CONF.OS_USER_DOMAIN_NAME,
         'project_domain_name': CONF.OS_PROJECT_DOMAIN_NAME
     }
-    auth = v3.Password(**keystone_authtoken)
+    auth = v3.Password(**credentials)
     return Session(auth=auth)

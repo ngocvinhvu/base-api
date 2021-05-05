@@ -15,6 +15,14 @@ class MachineResource(PublicResource):
     def post(self, *args, **kwargs):
         pass
 
+    GET = dict(
+        decorators=[auth_require],
+
+    )
+
+    def get(self, *args, **kwargs):
+        pass
+
 
 RESOURCES = {
     '/machines': MachineResource
