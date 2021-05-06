@@ -11,7 +11,8 @@ from .base_logics import BaseLogic
 class BaseResource(Resource):
     GET = dict(
         decorators=[],
-        schema=BaseGettingSchema,
+        input_schema=BaseGettingSchema,
+        output_schema=BaseGettingSchema,
         param_location='args',
         auth_required=False,
         logic_func='get',
@@ -42,17 +43,11 @@ class BaseResource(Resource):
 
             # Handle input data.
             params = self.parse_request_params(method_opts)
-
             kwargs.update(params)
 
             # Do logic.
             result = logic_func(*args, **kwargs)
-            status_code = result.get('status_code', None)
-            if status_code:
-                del result['status_code']
-            resp = jsonify(result)
-            resp.status_code = status_code if status_code else 200
-            return resp
+            return self.make_response(result, method_opts)
 
         handle_request.__name__ = request.method.lower()
         setattr(self, request.method.lower(), handle_request)
@@ -60,7 +55,7 @@ class BaseResource(Resource):
     def parse_request_params(self, method_opts):
         method = request.method
 
-        input_schema = method_opts.get('schema')
+        input_schema = method_opts.get('input_schema')
         if not input_schema:
             return {}
         input_schema = input_schema()
@@ -73,7 +68,20 @@ class BaseResource(Resource):
         for key in param_container:
             raw_params[key] = param_container.get(key)
 
-        err = input_schema.validate(raw_params)
+        data, err = input_schema.load(raw_params)
         if err:
             raise BadRequestParamsException(message=str(err))
-        return input_schema.load(raw_params)
+        return data
+
+    @classmethod
+    def make_response(cls, data, method_opts):
+        status_code = data.get('status_code', None)
+        if status_code:
+            del data['status_code']
+        status_code = status_code if status_code else 200
+        output_schema = method_opts.get('output_schema', None)
+
+        message = output_schema().dump(data).data if output_schema else data
+        resp = jsonify(message)
+        resp.status_code = status_code
+        return resp

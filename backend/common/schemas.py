@@ -1,20 +1,29 @@
-from marshmallow import fields, ValidationError, Schema
+from marshmallow import fields, Schema
+from marshmallow_enum import EnumField as LibEnumField
 
-from .constants import STRING_LENGTH
+
+class IdField(fields.UUID):
+    pass
 
 
-class IdField(fields.Field):
-    def _validate(self, value):
-        if not isinstance(value, str):
-            raise ValidationError('Invalid id.')
-        if len(value) != STRING_LENGTH['UUID4']:
-            raise ValidationError('Invalid id.')
+class DateTimeField(fields.DateTime):
+    pass
+
+
+class BooleanField(fields.Boolean):
+    pass
+
+
+class EnumField(LibEnumField):
+    pass
 
 
 class StringField(fields.String):
-    def _validate(self, value):
-        if not isinstance(value, str):
-            raise ValidationError('Invalid id.')
+    pass
+
+
+class NestedField(fields.Nested):
+    pass
 
 
 class BaseSchema(Schema):
@@ -35,3 +44,8 @@ class BaseUpdatingSchema(BaseInputSchema):
 
 class BaseGettingSchema(BaseInputSchema):
     id = IdField(required=True)
+
+    created_at = DateTimeField()
+    updated_at = DateTimeField()
+    deleted_at = DateTimeField()
+    deleted = BooleanField()

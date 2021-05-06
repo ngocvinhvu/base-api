@@ -55,7 +55,8 @@ def auth_require(f):
             token_data = keystone.tokens.get_token_data(g.token)
             g.tenant_id = token_data['token']['project']['id']
             g.user_id = token_data['token']['user']['id']
-            # kwargs['roles'] = token_data['token']['roles']
+            kwargs['roles'] = token_data['token']['roles']
+            kwargs['tenant_id'] = g.tenant_id
         except Exception as e:
             return abort(401)
         return f(*args, **kwargs)

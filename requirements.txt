@@ -8,7 +8,8 @@ Flask-RESTful==0.3.7
 Flask-Script==2.0.6
 Flask-SQLAlchemy==2.4.0
 SQLAlchemy==1.3.6
-marshmallow==3.11.1
+marshmallow==2.19.5
 ipython
 alembic
 psycopg2-binary
+marshmallow-enum==1.5.1

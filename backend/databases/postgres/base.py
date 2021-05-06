@@ -22,14 +22,6 @@ def get_now(element, compiler, **kw):
 
 class Serializer(object):
 
-    @classmethod
-    def parse_value(cls, value):
-        if value is None:
-            return None
-        if isinstance(value, datetime):
-            return value.strftime(DATE_FORMAT)
-        return value
-
     def filter_data(self, data, includes=None, excludes=None, **kwargs):
         all_keys = set(data.keys())
 
@@ -63,7 +55,7 @@ class Serializer(object):
         all_columns = self.__table__.columns
         for field_name in all_columns.keys():
             raw_value = getattr(self, field_name, None)
-            result[field_name] = self.parse_value(raw_value)
+            result[field_name] = raw_value
         return result
 
     def output(self, includes=None, excludes=None, **kwargs):

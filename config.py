@@ -12,6 +12,7 @@ class BaseConfig(object):
 
     # POSTGRES
     POSTGRES_URI = 'postgresql+psycopg2://postgres:vccloud123@10.5.90.23:5432/base-api'
+    API_URL = _get_env_or_default('API_URL', 'https://dev.bizflycloud.vn/api/cloud-backup')
 
 
 class PublicApiConfig(BaseConfig):
